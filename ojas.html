@@ -808,7 +808,10 @@
                             </thead>
                             <tbody id="recentOrdersTable">
                                 <tr>
-                                    <td colspan="5" style="text-align: center;">Loading...</td>
+                                    <td colspan="5" style="text-align: center;">
+                                        <div class="spinner"></div>
+                                        <p>Loading orders...</p>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -849,7 +852,10 @@
                             </thead>
                             <tbody id="productsTable">
                                 <tr>
-                                    <td colspan="7" style="text-align: center;">Loading...</td>
+                                    <td colspan="7" style="text-align: center;">
+                                        <div class="spinner"></div>
+                                        <p>Loading products...</p>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -888,7 +894,10 @@
                             </thead>
                             <tbody id="ordersTable">
                                 <tr>
-                                    <td colspan="7" style="text-align: center;">Loading...</td>
+                                    <td colspan="7" style="text-align: center;">
+                                        <div class="spinner"></div>
+                                        <p>Loading orders...</p>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -922,7 +931,10 @@
                             </thead>
                             <tbody id="usersTable">
                                 <tr>
-                                    <td colspan="6" style="text-align: center;">Loading...</td>
+                                    <td colspan="6" style="text-align: center;">
+                                        <div class="spinner"></div>
+                                        <p>Loading users...</p>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1134,7 +1146,7 @@
                         <div class="image-upload" id="imageUploadHelper">
                             <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 10px;"></i>
                             <p>Click here to upload images to FreeImage.host</p>
-                            <p style="font-size: 0.8rem; color: var(--gray);">After uploading, paste the URLs above</p>
+                            <p style="font-size: 0.8rem; color: var(--gray);">After uploading, paste URLs above</p>
                         </div>
                         <div class="image-preview" id="imagePreview"></div>
                     </div>
@@ -1207,13 +1219,13 @@
     <script>
         // Firebase Configuration - Replace with your config
         const firebaseConfig = {
-  apiKey: "AIzaSyCOxbacBij1DTunNQcLzF0_dTTFKFoH91o",
-  authDomain: "alpha-note-pro.firebaseapp.com",
-  projectId: "alpha-note-pro",
-  storageBucket: "alpha-note-pro.firebasestorage.app",
-  messagingSenderId: "318748135243",
-  appId: "1:318748135243:web:8a29ba9fae7b0b9d0a62ce"
-};
+            apiKey: "AIzaSyCOxbacBij1DTunNQcLzF0_dTTFKFoH91o",
+            authDomain: "alpha-note-pro.firebaseapp.com",
+            projectId: "alpha-note-pro",
+            storageBucket: "alpha-note-pro.firebasestorage.app",
+            messagingSenderId: "318748135243",
+            appId: "1:318748135243:web:8a29ba9fae7b0b9d0a62ce"
+        };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -1248,7 +1260,7 @@
                 } else {
                     // Redirect to login page or show login modal
                     // For simplicity, we'll just show an alert
-                    alert('Please sign in to access the admin panel');
+                    alert('Please sign in to access admin panel');
                     window.location.href = 'user.html';
                 }
             });
@@ -1334,7 +1346,7 @@
                 if (userDoc.exists) {
                     const userData = userDoc.data();
                     if (!userData.isAdmin) {
-                        alert('You do not have permission to access the admin panel');
+                        alert('You do not have permission to access admin panel');
                         window.location.href = 'user.html';
                         return;
                     }
@@ -1414,6 +1426,13 @@
         // Load Dashboard Data
         async function loadDashboardData() {
             try {
+                // Show loading state
+                document.getElementById('totalProducts').textContent = 'Loading...';
+                document.getElementById('totalOrders').textContent = 'Loading...';
+                document.getElementById('totalUsers').textContent = 'Loading...';
+                document.getElementById('totalRevenue').textContent = 'Loading...';
+                document.getElementById('recentOrdersTable').innerHTML = '<tr><td colspan="5" style="text-align: center;"><div class="spinner"></div><p>Loading orders...</p></td></tr>';
+                
                 // Load stats
                 const productsSnapshot = await db.collection('products').get();
                 const ordersSnapshot = await db.collection('orders').get();
@@ -1451,6 +1470,13 @@
             } catch (error) {
                 console.error('Error loading dashboard data:', error);
                 showToast('Failed to load dashboard data', 'error');
+                
+                // Reset UI with error state
+                document.getElementById('totalProducts').textContent = 'Error';
+                document.getElementById('totalOrders').textContent = 'Error';
+                document.getElementById('totalUsers').textContent = 'Error';
+                document.getElementById('totalRevenue').textContent = 'Error';
+                document.getElementById('recentOrdersTable').innerHTML = '<tr><td colspan="5" style="text-align: center;">Error loading data</td></tr>';
             }
         }
 
@@ -1482,6 +1508,9 @@
         // Load Products
         async function loadProducts() {
             try {
+                // Show loading state
+                document.getElementById('productsTable').innerHTML = '<tr><td colspan="7" style="text-align: center;"><div class="spinner"></div><p>Loading products...</p></td></tr>';
+                
                 const snapshot = await db.collection('products').get();
                 products = [];
                 snapshot.forEach(doc => {
@@ -1491,6 +1520,7 @@
             } catch (error) {
                 console.error('Error loading products:', error);
                 showToast('Failed to load products', 'error');
+                document.getElementById('productsTable').innerHTML = '<tr><td colspan="7" style="text-align: center;">Error loading products</td></tr>';
             }
         }
 
@@ -1534,6 +1564,9 @@
         // Load Orders
         async function loadOrders() {
             try {
+                // Show loading state
+                document.getElementById('ordersTable').innerHTML = '<tr><td colspan="7" style="text-align: center;"><div class="spinner"></div><p>Loading orders...</p></td></tr>';
+                
                 const snapshot = await db.collection('orders').get();
                 orders = [];
                 snapshot.forEach(doc => {
@@ -1543,6 +1576,7 @@
             } catch (error) {
                 console.error('Error loading orders:', error);
                 showToast('Failed to load orders', 'error');
+                document.getElementById('ordersTable').innerHTML = '<tr><td colspan="7" style="text-align: center;">Error loading orders</td></tr>';
             }
         }
 
@@ -1591,6 +1625,9 @@
         // Load Users
         async function loadUsers() {
             try {
+                // Show loading state
+                document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" style="text-align: center;"><div class="spinner"></div><p>Loading users...</p></td></tr>';
+                
                 const snapshot = await db.collection('users').get();
                 users = [];
                 snapshot.forEach(doc => {
@@ -1600,6 +1637,7 @@
             } catch (error) {
                 console.error('Error loading users:', error);
                 showToast('Failed to load users', 'error');
+                document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" style="text-align: center;">Error loading users</td></tr>';
             }
         }
 
