@@ -1467,22 +1467,39 @@
             }
         }
 
-        // Copy Product Link
-        function copyProductLink() {
-            if (!currentProduct) return;
-            
-            const productUrl = `${window.location.origin}/product/${currentProduct.id}`;
-            
-            // Create a temporary input element to copy the URL
-            const tempInput = document.createElement('input');
-            tempInput.value = productUrl;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            
-            showToast('Product link copied to clipboard', 'success');
-        }
+// Copy Product Link
+function copyProductLink() {
+    if (!currentProduct) return;
+    
+    // Use the actual PDF URL from the product data
+    const productUrl = currentProduct.pdfUrl || '';
+    
+    if (!productUrl) {
+        showToast('No PDF link available for this product', 'error');
+        return;
+    }
+    
+    // Create a temporary input element to copy the URL
+    const tempInput = document.createElement('input');
+    tempInput.value = productUrl;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999); // For mobile devices
+    const successful = document.execCommand('copy');
+    
+    // Fallback for modern browsers
+    if (!successful && navigator.clipboard) {
+        navigator.clipboard.writeText(productUrl).then(() => {
+            showToast('PDF link copied to clipboard', 'success');
+        }).catch(() => {
+            showToast('Failed to copy link', 'error');
+        });
+    } else {
+        showToast('PDF link copied to clipboard', 'success');
+    }
+    
+    document.body.removeChild(tempInput);
+}
 
         // Change Main Image
         function changeMainImage(src, thumbnail) {
