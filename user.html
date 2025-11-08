@@ -766,26 +766,6 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        /* PDF Viewer */
-        .pdf-viewer {
-            width: 100%;
-            height: 600px;
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .pdf-viewer iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .pdf-download {
-            margin-top: 15px;
-            text-align: center;
-        }
-
         /* Footer */
         footer {
             background: rgba(0, 0, 0, 0.8);
@@ -1477,17 +1457,6 @@
                 // Update wishlist button
                 const wishlistBtn = document.getElementById('addToWishlistBtn');
                 wishlistBtn.innerHTML = `<i class="fas fa-heart ${wishlist.includes(productId) ? 'text-danger' : ''}"></i>`;
-                
-                // Check if PDF is available and show PDF viewer
-                if (product.pdfUrl) {
-                    document.getElementById('pdfViewer').style.display = 'block';
-                    document.getElementById('pdfFrame').src = product.pdfUrl;
-                    document.getElementById('pdfDownload').style.display = 'block';
-                    document.getElementById('downloadLink').href = product.pdfUrl;
-                } else {
-                    document.getElementById('pdfViewer').style.display = 'none';
-                    document.getElementById('pdfDownload').style.display = 'none';
-                }
                 
                 // Show modal
                 productModal.classList.add('active');
