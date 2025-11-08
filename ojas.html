@@ -1207,13 +1207,13 @@
     <script>
         // Firebase Configuration - Replace with your config
         const firebaseConfig = {
-  apiKey: "AIzaSyCOxbacBij1DTunNQcLzF0_dTTFKFoH91o",
-  authDomain: "alpha-note-pro.firebaseapp.com",
-  projectId: "alpha-note-pro",
-  storageBucket: "alpha-note-pro.firebasestorage.app",
-  messagingSenderId: "318748135243",
-  appId: "1:318748135243:web:8a29ba9fae7b0b9d0a62ce"
-};
+            apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            authDomain: "your-project-id.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project-id.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456789"
+        };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -1414,13 +1414,6 @@
         // Load Dashboard Data
         async function loadDashboardData() {
             try {
-                // Show loading state
-                document.getElementById('totalProducts').textContent = 'Loading...';
-                document.getElementById('totalOrders').textContent = 'Loading...';
-                document.getElementById('totalUsers').textContent = 'Loading...';
-                document.getElementById('totalRevenue').textContent = 'Loading...';
-                document.getElementById('recentOrdersTable').innerHTML = '<tr><td colspan="5" style="text-align: center;">Loading...</td></tr>';
-                
                 // Load stats
                 const productsSnapshot = await db.collection('products').get();
                 const ordersSnapshot = await db.collection('orders').get();
@@ -1458,13 +1451,6 @@
             } catch (error) {
                 console.error('Error loading dashboard data:', error);
                 showToast('Failed to load dashboard data', 'error');
-                
-                // Reset UI with error state
-                document.getElementById('totalProducts').textContent = 'Error';
-                document.getElementById('totalOrders').textContent = 'Error';
-                document.getElementById('totalUsers').textContent = 'Error';
-                document.getElementById('totalRevenue').textContent = 'Error';
-                document.getElementById('recentOrdersTable').innerHTML = '<tr><td colspan="5" style="text-align: center;">Error loading data</td></tr>';
             }
         }
 
@@ -1496,9 +1482,6 @@
         // Load Products
         async function loadProducts() {
             try {
-                // Show loading state
-                document.getElementById('productsTable').innerHTML = '<tr><td colspan="7" style="text-align: center;">Loading...</td></tr>';
-                
                 const snapshot = await db.collection('products').get();
                 products = [];
                 snapshot.forEach(doc => {
@@ -1508,7 +1491,6 @@
             } catch (error) {
                 console.error('Error loading products:', error);
                 showToast('Failed to load products', 'error');
-                document.getElementById('productsTable').innerHTML = '<tr><td colspan="7" style="text-align: center;">Error loading products</td></tr>';
             }
         }
 
@@ -1552,9 +1534,6 @@
         // Load Orders
         async function loadOrders() {
             try {
-                // Show loading state
-                document.getElementById('ordersTable').innerHTML = '<tr><td colspan="7" style="text-align: center;">Loading...</td></tr>';
-                
                 const snapshot = await db.collection('orders').get();
                 orders = [];
                 snapshot.forEach(doc => {
@@ -1564,7 +1543,6 @@
             } catch (error) {
                 console.error('Error loading orders:', error);
                 showToast('Failed to load orders', 'error');
-                document.getElementById('ordersTable').innerHTML = '<tr><td colspan="7" style="text-align: center;">Error loading orders</td></tr>';
             }
         }
 
@@ -1613,9 +1591,6 @@
         // Load Users
         async function loadUsers() {
             try {
-                // Show loading state
-                document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" style="text-align: center;">Loading...</td></tr>';
-                
                 const snapshot = await db.collection('users').get();
                 users = [];
                 snapshot.forEach(doc => {
@@ -1625,7 +1600,6 @@
             } catch (error) {
                 console.error('Error loading users:', error);
                 showToast('Failed to load users', 'error');
-                document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" style="text-align: center;">Error loading users</td></tr>';
             }
         }
 
@@ -2018,4 +1992,150 @@
             try {
                 const privacyPolicyHtml = document.getElementById('privacyPolicy').value;
                 const termsHtml = document.getElementById('terms').value;
-                const refundPolicyHtml = document.getElementById('refund
+                const refundPolicyHtml = document.getElementById('refundPolicy').value;
+                
+                await db.collection('siteSettings').doc('settings').set({
+                    ...siteSettings,
+                    privacyPolicyHtml,
+                    termsHtml,
+                    refundPolicyHtml,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                showToast('Legal settings saved', 'success');
+                loadSettings();
+            } catch (error) {
+                console.error('Error saving legal settings:', error);
+                showToast('Failed to save settings', 'error');
+            }
+        }
+
+        async function saveContactSettings() {
+            try {
+                const contactEmail = document.getElementById('contactEmail').value;
+                const contactPhone = document.getElementById('contactPhone').value;
+                const gstNumber = document.getElementById('gstNumber').value;
+                
+                await db.collection('siteSettings').doc('settings').set({
+                    ...siteSettings,
+                    contactEmail,
+                    contactPhone,
+                    gstNumber,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                showToast('Contact settings saved', 'success');
+                loadSettings();
+            } catch (error) {
+                console.error('Error saving contact settings:', error);
+                showToast('Failed to save settings', 'error');
+            }
+        }
+
+        async function saveSocialSettings() {
+            try {
+                const youtubeChannel = document.getElementById('youtubeChannel').value;
+                const telegramLink = document.getElementById('telegramLink').value;
+                
+                await db.collection('siteSettings').doc('settings').set({
+                    ...siteSettings,
+                    youtubeChannel,
+                    telegramLink,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                showToast('Social settings saved', 'success');
+                loadSettings();
+            } catch (error) {
+                console.error('Error saving social settings:', error);
+                showToast('Failed to save settings', 'error');
+            }
+        }
+
+        async function saveAnnouncementsSettings() {
+            try {
+                const announcementsHtml = document.getElementById('announcements').value;
+                
+                await db.collection('siteSettings').doc('settings').set({
+                    ...siteSettings,
+                    announcementsHtml,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                showToast('Announcements saved', 'success');
+                loadSettings();
+            } catch (error) {
+                console.error('Error saving announcements:', error);
+                showToast('Failed to save announcements', 'error');
+            }
+        }
+
+        // Import/Export Products
+        function importProducts() {
+            showToast('Import functionality would be implemented here', 'info');
+        }
+
+        function exportProducts() {
+            showToast('Export functionality would be implemented here', 'info');
+        }
+
+        // Utility Functions
+        function getStatusClass(status) {
+            switch (status) {
+                case 'pending':
+                    return 'warning';
+                case 'paid':
+                    return 'success';
+                case 'delivered':
+                    return 'primary';
+                case 'cancelled':
+                    return 'danger';
+                default:
+                    return 'warning';
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = '';
+            switch (type) {
+                case 'success':
+                    icon = '<i class="fas fa-check-circle"></i>';
+                    break;
+                case 'error':
+                    icon = '<i class="fas fa-exclamation-circle"></i>';
+                    break;
+                case 'warning':
+                    icon = '<i class="fas fa-exclamation-triangle"></i>';
+                    break;
+                default:
+                    icon = '<i class="fas fa-info-circle"></i>';
+            }
+            
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    </script>
+</body>
+</html>
