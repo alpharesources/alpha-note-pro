@@ -23,6 +23,16 @@
             --transition: all 0.3s ease;
         }
 
+        [data-theme="light"] {
+            --dark: #f5f5f5;
+            --light: #0f0f23;
+            --gray: #4b5563;
+            --light-gray: #e5e7eb;
+            --glass-bg: rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -35,6 +45,62 @@
             color: var(--light);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Tech Network Background */
+        .tech-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .tech-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                linear-gradient(rgba(74, 108, 247, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(74, 108, 247, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .connection-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.5;
+            transform-origin: left center;
+        }
+
+        .data-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            opacity: 0.5;
         }
 
         /* Glassmorphic Card */
@@ -65,6 +131,10 @@
             border-bottom: 1px solid var(--glass-border);
         }
 
+        [data-theme="light"] header {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
         .header-container {
             display: flex;
             justify-content: space-between;
@@ -75,7 +145,10 @@
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
-            color: var(--primary);
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -84,6 +157,10 @@
 
         .logo i {
             font-size: 1.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .header-actions {
@@ -92,11 +169,48 @@
             gap: 15px;
         }
 
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--glass-border);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle.active {
+            background: var(--primary);
+        }
+
+        .theme-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: var(--light);
+            border-radius: 50%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle.active .theme-slider {
+            transform: translateX(30px);
+        }
+
+        .theme-icon {
+            font-size: 14px;
+        }
+
         .user-menu {
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
+            position: relative;
         }
 
         .user-avatar {
@@ -111,6 +225,44 @@
             font-weight: 600;
         }
 
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+        }
+
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 12px 15px;
+            color: var(--light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .user-dropdown a:hover {
+            background: var(--glass-bg);
+            color: var(--primary);
+        }
+
         /* Layout */
         .admin-layout {
             display: flex;
@@ -121,12 +273,37 @@
         .sidebar {
             width: 250px;
             background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-right: 1px solid var(--glass-border);
             padding: 20px 0;
             position: sticky;
             top: 70px;
             height: calc(100vh - 70px);
             overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        [data-theme="light"] .sidebar {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
 
         .sidebar-menu {
@@ -145,10 +322,12 @@
             color: var(--light);
             text-decoration: none;
             transition: var(--transition);
+            position: relative;
         }
 
         .sidebar-link:hover {
             background: var(--glass-bg);
+            color: var(--primary);
         }
 
         .sidebar-link.active {
@@ -622,9 +801,21 @@
             }
 
             .sidebar {
-                width: 100%;
-                position: static;
-                height: auto;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 250px;
+                height: 100vh;
+                z-index: 999;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: flex;
             }
 
             .form-row {
@@ -681,7 +872,18 @@
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
+    <!-- Tech Network Background -->
+    <div class="tech-background" id="techBackground">
+        <div class="tech-grid"></div>
+        <!-- Connection dots and lines will be added dynamically -->
+    </div>
+
+    <!-- Sidebar Toggle -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <!-- Header -->
     <header>
         <div class="container">
@@ -692,9 +894,20 @@
                 </a>
                 
                 <div class="header-actions">
-                    <div class="user-menu">
+                    <div class="theme-toggle" id="themeToggle">
+                        <div class="theme-slider">
+                            <i class="fas fa-moon theme-icon" id="themeIcon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="user-menu" id="userMenu">
                         <div class="user-avatar" id="userAvatar">A</div>
                         <span id="userName">Admin</span>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#" id="profileLink"><i class="fas fa-user"></i> Profile</a>
+                            <a href="https://t.me/RavenNotesOfficial" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
+                            <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -704,7 +917,7 @@
     <!-- Admin Layout -->
     <div class="admin-layout">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <ul class="sidebar-menu">
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link active" data-page="dashboard">
@@ -1248,6 +1461,12 @@
         const toastContainer = document.getElementById('toastContainer');
         const userAvatar = document.getElementById('userAvatar');
         const userName = document.getElementById('userName');
+        const userDropdown = document.getElementById('userDropdown');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const techBackground = document.getElementById('techBackground');
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
@@ -1265,9 +1484,122 @@
                 }
             });
 
+            // Initialize tech background
+            initTechBackground();
+
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeToggle(savedTheme);
+
             // Event Listeners
             setupEventListeners();
         });
+
+        // Initialize Tech Background
+        function initTechBackground() {
+            // Create connection dots
+            for (let i = 0; i < 20; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'connection-dot';
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                techBackground.appendChild(dot);
+
+                // Animate dot
+                animateDot(dot);
+            }
+
+            // Create connection lines
+            for (let i = 0; i < 10; i++) {
+                const line = document.createElement('div');
+                line.className = 'connection-line';
+                line.style.left = `${Math.random() * 100}%`;
+                line.style.top = `${Math.random() * 100}%`;
+                line.style.width = `${Math.random() * 200 + 50}px`;
+                line.style.transform = `rotate(${Math.random() * 360}deg)`;
+                techBackground.appendChild(line);
+
+                // Animate line
+                animateLine(line);
+            }
+
+            // Create data particles
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'data-particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                techBackground.appendChild(particle);
+
+                // Animate particle
+                animateParticle(particle);
+            }
+        }
+
+        // Animate connection dot
+        function animateDot(dot) {
+            const duration = Math.random() * 3 + 2;
+            const delay = Math.random() * 2;
+            
+            dot.style.animation = `pulse ${duration}s infinite ${delay}s`;
+            
+            // Create pulsing animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse {
+                    0% { opacity: 0.2; transform: scale(1); }
+                    50% { opacity: 0.8; transform: scale(1.5); }
+                    100% { opacity: 0.2; transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Animate connection line
+        function animateLine(line) {
+            const duration = Math.random() * 10 + 5;
+            const delay = Math.random() * 5;
+            
+            line.style.animation = `fadeInOut ${duration}s infinite ${delay}s`;
+            
+            // Create fade in/out animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInOut {
+                    0% { opacity: 0.1; }
+                    50% { opacity: 0.7; }
+                    100% { opacity: 0.1; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Animate data particle
+        function animateParticle(particle) {
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * 5;
+            
+            // Random movement
+            const startX = parseFloat(particle.style.left);
+            const startY = parseFloat(particle.style.top);
+            const endX = Math.random() * 100;
+            const endY = Math.random() * 100;
+            
+            particle.style.animation = `moveParticle ${duration}s infinite ${delay}s`;
+            
+            // Create movement animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes moveParticle {
+                    0% { left: ${startX}%; top: ${startY}%; opacity: 0; }
+                    10% { opacity: 0.5; }
+                    90% { opacity: 0.5; }
+                    100% { left: ${endX}%; top: ${endY}%; opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
 
         // Setup Event Listeners
         function setupEventListeners() {
@@ -1278,6 +1610,45 @@
                     const page = link.dataset.page;
                     switchPage(page);
                 });
+            });
+
+            // Sidebar toggle
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+
+            // User menu
+            userMenu.addEventListener('click', () => {
+                userDropdown.classList.toggle('active');
+            });
+
+            // Close user dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!userMenu.contains(e.target)) {
+                    userDropdown.classList.remove('active');
+                }
+            });
+
+            // User dropdown links
+            document.getElementById('profileLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                // Profile functionality would go here
+                showToast('Profile page would be loaded here', 'info');
+            });
+
+            document.getElementById('logoutLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                auth.signOut();
+                showToast('Logged out successfully', 'success');
+            });
+
+            // Theme toggle
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeToggle(newTheme);
             });
 
             // Product Modal
@@ -1337,6 +1708,17 @@
             // Import/Export Products
             document.getElementById('importProductsBtn').addEventListener('click', importProducts);
             document.getElementById('exportProductsBtn').addEventListener('click', exportProducts);
+        }
+
+        // Update Theme Toggle
+        function updateThemeToggle(theme) {
+            if (theme === 'dark') {
+                themeToggle.classList.remove('active');
+                themeIcon.className = 'fas fa-moon theme-icon';
+            } else {
+                themeToggle.classList.add('active');
+                themeIcon.className = 'fas fa-sun theme-icon';
+            }
         }
 
         // Check Admin Role
